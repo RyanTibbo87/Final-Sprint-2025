@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Enter Numbers</title>
+  </head>
+  <body>
+    <h1>Binary Search Tree Generator</h1>
+
+    <form id="treeForm">
+      <label for="numbers">Enter numbers (comma-separated):</label>
+      <input type="text" id="numbers" name="numbers" required />
+      <button type="submit">Submit</button>
+    </form>
+
+    <div id="output"></div>
+
+    <br />
+    <a href="/previous-trees" target="_blank">View Previous Trees (JSON)</a>
+
+    <script>
+      document
+        .getElementById("treeForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const input = document.getElementById("numbers").value;
+
+          fetch("/process-numbers", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "numbers=" + encodeURIComponent(input),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              document.getElementById("output").innerHTML = `
+                    <h3>Input:</h3><pre>${data.input}</pre>
+                    <h3>Tree:</h3><pre>${data.tree}</pre>
+                `;
+            })
+            .catch((err) => {
+              document.getElementById("output").innerText =
+                "Something went wrong!";
+              console.error(err);
+            });
+        });
+    </script>
+  </body>
+</html>
