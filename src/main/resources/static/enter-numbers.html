@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Enter Numbers</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <h1>Binary Search Tree Generator</h1>
@@ -24,17 +25,24 @@
           e.preventDefault();
           const input = document.getElementById("numbers").value;
 
-          fetch("/process-numbers", {
+          fetch("http://localhost:8080/process-numbers", {
             method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
             body: "numbers=" + encodeURIComponent(input),
           })
             .then((response) => response.json())
             .then((data) => {
               document.getElementById("output").innerHTML = `
-                    <h3>Input:</h3><pre>${data.input}</pre>
-                    <h3>Tree:</h3><pre>${data.tree}</pre>
-                `;
+              <h3>Input:</h3><pre>${data.input}</pre>
+              <h3>Tree:</h3><pre>${JSON.stringify(
+                JSON.parse(data.tree),
+                null,
+                2
+              )}</pre>
+
+              `;
             })
             .catch((err) => {
               document.getElementById("output").innerText =

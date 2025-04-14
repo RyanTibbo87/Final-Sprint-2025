@@ -23,6 +23,8 @@ public class TreeController {
     // Process numbers and return JSON with result
     @PostMapping("/process-numbers")
     public Map<String, Object> processNumbers(@RequestParam("numbers") String numbers) {
+        System.out.println("Received numbers: " + numbers);
+        
         List<Integer> inputList = Arrays.stream(numbers.split(","))
                 .map(String::trim)
                 .map(Integer::parseInt)
@@ -31,11 +33,9 @@ public class TreeController {
         TreeNode root = treeService.buildTree(inputList);
         treeService.saveTree(inputList, root);
 
-        String treeJson = treeService.serializeTree(root);
-
         Map<String, Object> response = new HashMap<>();
         response.put("input", inputList);
-        response.put("tree", treeJson);
+        response.put("tree", root);
 
         return response;
     }
