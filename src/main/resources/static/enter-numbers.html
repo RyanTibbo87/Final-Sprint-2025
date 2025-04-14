@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Enter Numbers</title>
+    <meta charset="UTF-8" />
+    <title>Binary Search Tree Generator</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -15,8 +16,8 @@
 
     <div id="output"></div>
 
-    <br />
-    <a href="/previous-trees" target="_blank">View Previous Trees (JSON)</a>
+    <h2>Previous Trees</h2>
+    <div id="previousTrees"></div>
 
     <script>
       document
@@ -34,15 +35,18 @@
           })
             .then((response) => response.json())
             .then((data) => {
-              document.getElementById("output").innerHTML = `
-              <h3>Input:</h3><pre>${data.input}</pre>
-              <h3>Tree:</h3><pre>${JSON.stringify(
-                JSON.parse(data.tree),
-                null,
-                2
-              )}</pre>
+              // safely parse the tree
+              let parsedTree =
+                typeof data.tree === "string"
+                  ? JSON.parse(data.tree)
+                  : data.tree;
 
-              `;
+              document.getElementById("output").innerHTML = `
+            <h3>Input:</h3>
+            <pre>${data.input.join(", ")}</pre>
+            <h3>Tree:</h3>
+            <pre>${JSON.stringify(parsedTree, null, 2)}</pre>
+          `;
             })
             .catch((err) => {
               document.getElementById("output").innerText =
@@ -50,6 +54,31 @@
               console.error(err);
             });
         });
+
+      // Optional: Load previous trees
+      fetch("http://localhost:8080/previous-trees")
+        .then((response) => response.json())
+        .then((trees) => {
+          const container = document.getElementById("previousTrees");
+          if (!Array.isArray(trees)) return;
+
+          trees.forEach((tree) => {
+            let parsed =
+              typeof tree.serializedTree === "string"
+                ? JSON.parse(tree.serializedTree)
+                : tree.serializedTree;
+
+            const div = document.createElement("div");
+            div.classList.add("tree-entry");
+            div.innerHTML = `
+            <p><strong>Input:</strong> ${tree.inputNumbers.join(", ")}</p>
+            <pre>${JSON.stringify(parsed, null, 2)}</pre>
+            <hr/>
+          `;
+            container.appendChild(div);
+          });
+        })
+        .catch((err) => console.error("Failed to load previous trees:", err));
     </script>
   </body>
 </html>

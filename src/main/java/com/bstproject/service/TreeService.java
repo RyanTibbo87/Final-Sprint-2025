@@ -46,9 +46,10 @@ public class TreeService {
 
     // Save input + tree structure to DB
     public TreeData saveTree(List<Integer> inputNumbers, TreeNode root) {
-        String inputStr = inputNumbers.toString();
         String treeStr = serializeTree(root);
-        TreeData treeData = new TreeData(inputStr, treeStr);
+        TreeData treeData = new TreeData();
+        treeData.setInputNumbers(inputNumbers); 
+        treeData.setSerializedTree(treeStr);
         return treeDataRepository.save(treeData);
     }
 

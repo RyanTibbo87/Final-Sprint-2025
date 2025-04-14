@@ -1,9 +1,7 @@
 package com.bstproject.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 public class TreeData {
@@ -11,15 +9,23 @@ public class TreeData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String inputNumbers;
-    private String treeStructure;
 
-    public TreeData() {}
+    @ElementCollection
+    private List<Integer> inputNumbers;
 
-    public TreeData(String inputNumbers, String treeStructure) {
-        this.inputNumbers = inputNumbers;
-        this.treeStructure = treeStructure;
+    @Lob
+    private String serializedTree;
+
+    // Constructors
+    public TreeData() {
     }
+
+    public TreeData(List<Integer> inputNumbers, String serializedTree) {
+        this.inputNumbers = inputNumbers;
+        this.serializedTree = serializedTree;
+    }
+
+    // Getters and Setters
 
     public Long getId() {
         return id;
@@ -29,19 +35,19 @@ public class TreeData {
         this.id = id;
     }
 
-    public String getInputNumbers() {
+    public List<Integer> getInputNumbers() {
         return inputNumbers;
     }
 
-    public void setInputNumbers(String inputNumbers) {
+    public void setInputNumbers(List<Integer> inputNumbers) {
         this.inputNumbers = inputNumbers;
     }
 
-    public String getTreeStructure() {
-        return treeStructure;
+    public String getSerializedTree() {
+        return serializedTree;
     }
 
-    public void setTreeStructure(String treeStructure) {
-        this.treeStructure = treeStructure;
+    public void setSerializedTree(String serializedTree) {
+        this.serializedTree = serializedTree;
     }
 }

@@ -54,12 +54,15 @@ public class TreeServiceTest {
         List<Integer> input = List.of(1, 2);
         TreeNode root = treeService.buildTree(input);
 
-        TreeData mockData = new TreeData(input.toString(), treeService.serializeTree(root));
+        TreeData mockData = new TreeData();
+        mockData.setInputNumbers(input);
+        mockData.setSerializedTree(treeService.serializeTree(root));
+
         when(treeDataRepository.save(any(TreeData.class))).thenReturn(mockData);
 
         TreeData saved = treeService.saveTree(input, root);
 
-        assertEquals("[1, 2]", saved.getInputNumbers());
-        assertTrue(saved.getTreeStructure().contains("\"value\": 1"));
+        assertEquals(List.of(1, 2), saved.getInputNumbers());
+        assertTrue(saved.getSerializedTree().contains("\"value\": 1"));
     }
 }
