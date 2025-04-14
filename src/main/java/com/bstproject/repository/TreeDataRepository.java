@@ -1,5 +1,9 @@
-package main.java.com.bstproject.repository;
+package com.bstproject.repository;
 
-public class TreeDataRepository {
-    
+import com.bstproject.model.TreeData;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface TreeDataRepository extends JpaRepository<TreeData, Long> {
 }
