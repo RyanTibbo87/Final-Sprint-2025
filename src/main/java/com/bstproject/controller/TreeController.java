@@ -4,49 +4,45 @@ import com.bstproject.model.TreeData;
 import com.bstproject.model.TreeNode;
 import com.bstproject.service.TreeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
-@Controller
+@RestController
 public class TreeController {
 
     @Autowired
     private TreeService treeService;
 
-    // Show the input form
-    @GetMapping("/enter-numbers")
-    public String showForm() {
-        return "enter-numbers";
+    // Serve the form (handled by HTML file in /static)
+    @GetMapping("/")
+    public String welcome() {
+        return "Welcome! Go to /enter-numbers.html to input your data.";
     }
 
-    // Process submitted numbers
+    // Process numbers and return JSON with result
     @PostMapping("/process-numbers")
-    public String processNumbers(@RequestParam("numbers") String numbers, Model model) {
+    public Map<String, Object> processNumbers(@RequestParam("numbers") String numbers) {
         List<Integer> inputList = Arrays.stream(numbers.split(","))
                 .map(String::trim)
                 .map(Integer::parseInt)
-                .collect(Collectors.toList());
+                .toList();
 
         TreeNode root = treeService.buildTree(inputList);
         treeService.saveTree(inputList, root);
 
-        String serializedTree = treeService.serializeTree(root);
-        model.addAttribute("tree", serializedTree);
-        model.addAttribute("input", inputList);
+        String treeJson = treeService.serializeTree(root);
 
-        return "enter-numbers";
+        Map<String, Object> response = new HashMap<>();
+        response.put("input", inputList);
+        response.put("tree", treeJson);
+
+        return response;
     }
 
-    // Show all previous trees
+    // View all previous trees as raw JSON
     @GetMapping("/previous-trees")
-    public String viewPreviousTrees(Model model) {
-        List<TreeData> allTrees = treeService.getAllTrees();
-        model.addAttribute("trees", allTrees);
-        return "previous-trees";
+    public List<TreeData> getPreviousTrees() {
+        return treeService.getAllTrees();
     }
 }
